@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import path from "path";
+import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
@@ -11,6 +12,8 @@ const app = express();
 const __dirname = path.resolve(); // manual way to create __dirname in es modules returns absolute path of the current directly
 
 const port = process.env.PORT;
+
+app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
@@ -23,4 +26,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(port, () => console.log("Server running on port:" + port));
+app.listen(port, () => {
+  console.log("Server running on port:" + port);
+  connectDB();
+});
