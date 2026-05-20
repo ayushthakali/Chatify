@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import path from "path";
+import cors from "cors";
 import { connectDB } from "./lib/db.js";
 
 dotenv.config();
@@ -13,6 +14,7 @@ const __dirname = path.resolve(); // manual way to create __dirname in es module
 const port = process.env.PORT;
 
 app.use(express.json()); //JSON string  →  JavaScript object
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); //credentials:true is needed to allow frontend to send cookie to backend
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
