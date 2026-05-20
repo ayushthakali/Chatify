@@ -4,6 +4,7 @@ import {
   LoaderIcon,
   MailIcon,
   MessageCircleIcon,
+  LockIcon,
   UserIcon,
 } from "lucide-react";
 import { Link } from "react-router";
@@ -85,7 +86,7 @@ function SignUpPage() {
                   <div>
                     <label className="auth-input-label">Password</label>
                     <div className="relative">
-                      <UserIcon className="auth-input-icon" />
+                      <LockIcon className="auth-input-icon" />
                       <input
                         className="input"
                         type="password"
