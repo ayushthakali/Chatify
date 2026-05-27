@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import "dotenv/config";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
@@ -103,11 +104,14 @@ export const updateProfile = async (req, res) => {
     if (!profilePic)
       return res.status(400).json({ message: "Profile pic is required." });
 
+    if (profilePic.length > 5 * 1024 * 1024) {
+      return res.status(400).json({ message: "Image too large. Max 5MB." });
+    }
     const userId = req.user._id;
 
     const uploadResponse = await cloudinary.uploader.upload(profilePic);
 
-    await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
       { new: true }, //return updated docs not the old one.
