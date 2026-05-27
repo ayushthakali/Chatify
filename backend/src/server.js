@@ -13,9 +13,10 @@ const app = express();
 const __dirname = path.resolve(); // manual way to create __dirname in es modules returns absolute path of the current directly
 const port = process.env.PORT;
 
-app.use(express.json()); //JSON string  →  JavaScript object
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); //credentials:true is needed to allow frontend to send cookie to backend
 app.use(cookieParser());
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); //credentials:true is needed to allow frontend to send cookie to backend
+app.use(express.json({ limit: "10mb" })); //JSON string  →  JavaScript object
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
