@@ -6,7 +6,7 @@ export const useChatStore = create((set, get) => ({
   allContacts: [],
   chats: [],
   messages: [],
-  activeTab: [],
+  activeTab: "chats",
   selectedUser: null,
   isUsersLoading: false,
   isMessageLoading: false,
@@ -41,6 +41,18 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isUsersLoading: false });
+    }
+  },
+
+  getMessagesByUserId: async (userId) => {
+    set({ isMessageLoading: true });
+    try {
+      const res = await axiosInstance.get(`/messages/${userId}`);
+      set({ messages: res.data });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      set({ isMessageLoading: false });
     }
   },
 }));
