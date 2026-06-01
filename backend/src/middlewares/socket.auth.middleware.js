@@ -14,7 +14,9 @@ export const socketAuthMiddleware = async (socket, next) => {
       console.log("Socket connection rejected: No token provided.");
       return next(new Error("Unauthorized - No Token Provided"));
     }
-
+    
+    const { JWT_SECRET } = process.env;
+    if (!JWT_SECRET) throw new Error("JWT_SECRET is not configured.");
     let decoded;
     try {
       decoded = jwt.verify(token, JWT_SECRET);
