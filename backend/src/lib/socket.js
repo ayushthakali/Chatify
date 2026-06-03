@@ -18,24 +18,30 @@ const io = new Server(server, {
 io.use(socketAuthMiddleware);
 
 // for storing online users
-const userSocketMap = {};
+const userSocketMap = new Map();
 
 io.on("connection", (socket) => {
   //Each client gets its own socket object.
   console.log("A user connected", socket.user.fullName);
 
   const userId = socket.userId;
-  userSocketMap[userId] = socket.id;
+  const sockets = userSocketMap.get(userId) ?? new Set(); //checks whether the map has the userId key or not
+  sockets.add(socket.id);
+  userSocketMap.set(userId, sockets);
 
   //io.emit() is used to send events to all connected clients -> io.emit(eventName, data);
   //socket.emit() sends the event to only that specific client represented by socket.
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  io.emit("getOnlineUsers", Array.from(userSocketMap.keys()));
 
   //socket.on listens for events from clients
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.user.fullName);
-    delete userSocketMap[userId];
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    const sockets = userSocketMap.get(userId); //sockets is not a copy. It's a reference to the actual Set stored inside the Map.
+    if (sockets) {
+      sockets.delete(socket.id);
+      if (sockets.size === 0) userSocketMap.delete(userId);
+    }
+    io.emit("getOnlineUsers", Array.from(userSocketMap.keys()));
   });
 });
 

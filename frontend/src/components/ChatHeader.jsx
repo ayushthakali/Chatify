@@ -7,7 +7,9 @@ function ChatHeader() {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
 
-  const isOnline = onlineUsers.includes(selectedUser._id);
+  const isOnline = selectedUser?._id
+    ? onlineUsers.includes(selectedUser._id)
+    : false;
 
   useEffect(() => {
     const handleEscKey = (e) => {
