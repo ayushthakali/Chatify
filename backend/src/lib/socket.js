@@ -17,7 +17,12 @@ const io = new Server(server, {
 //auth middleware to all socket connections
 io.use(socketAuthMiddleware);
 
-// for storing online users
+//to check if user is online or not 
+export function getReceiverSocketId(userId) {
+  return userSocketMap.get(userId) ?? new Set();
+}
+
+// for storing online users -> used a map to allow multiple sessions like in laptop, mobile, tablets
 const userSocketMap = new Map();
 
 io.on("connection", (socket) => {
