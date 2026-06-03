@@ -1,6 +1,7 @@
 import cloudinary from "../lib/cloudinary.js";
 import User from "../models/User.js";
 import Message from "../models/Message.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -68,6 +69,15 @@ export const sendMessage = async (req, res) => {
     });
 
     await newMessage.save();
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      //to send message to all online devices of receiver at once
+      for (const socketId of receiverSocketId) {
+        io.to(socketId).emit("newMessage", newMessage);
+      }
+    }
+
     return res.status(201).json(newMessage);
   } catch (error) {
     console.log("Error in sendMessage controller:", error);
