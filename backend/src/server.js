@@ -6,10 +6,10 @@ import messageRoutes from "./routes/message.route.js";
 import path from "path";
 import cors from "cors";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
-const app = express();
 const __dirname = path.resolve(); // manual way to create __dirname in es modules returns absolute path of the current directly
 const port = process.env.PORT;
 
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Server running on port:" + port);
   connectDB();
 });
