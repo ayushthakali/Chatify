@@ -17,7 +17,7 @@ const io = new Server(server, {
 //auth middleware to all socket connections
 io.use(socketAuthMiddleware);
 
-//to check if user is online or not 
+//to check if user is online or not
 export function getReceiverSocketId(userId) {
   return userSocketMap.get(userId) ?? new Set();
 }
@@ -25,6 +25,7 @@ export function getReceiverSocketId(userId) {
 // for storing online users -> used a map to allow multiple sessions like in laptop, mobile, tablets
 const userSocketMap = new Map();
 
+// on-> listen for events
 io.on("connection", (socket) => {
   //Each client gets its own socket object.
   console.log("A user connected", socket.user.fullName);
